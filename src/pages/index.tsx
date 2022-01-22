@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { User } from "../models";
-import { MdArrowForward } from "react-icons/md";
+import { Day, User } from "../models";
+import { MdArrowForward, MdArrowBack } from "react-icons/md";
 import Modal from "../components/Modal";
 import { getCurrentDate } from "../utils";
 
@@ -41,7 +41,7 @@ const Index: NextPage = () => {
                     days.push(getCurrentDate());
                 }
 
-                setAllDays(days);
+                setAllDays(days.sort());
             })
             .finally(() => setLoading(false));
     }, []);
@@ -60,7 +60,21 @@ const Index: NextPage = () => {
             </header>
             <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
             <main>
-                <h2>Para o dia {selectedDay}</h2>
+                <div className="day-header">
+                    <MdArrowBack
+                        onClick={() => {
+                            setSelectedDay(allDays[allDays.findIndex(d => d === selectedDay) - 1]);
+                        }}
+                        className={allDays.findIndex(d => d === selectedDay) === 0 ? "inactive" : ""}
+                    />
+                    <h2>Para o dia {selectedDay}</h2>
+                    <MdArrowForward
+                        onClick={() => {
+                            setSelectedDay(allDays[allDays.findIndex(d => d === selectedDay) + 1]);
+                        }}
+                        className={allDays.findIndex(d => d === selectedDay) === allDays.length - 1 ? "inactive" : ""}
+                    />
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -93,13 +107,17 @@ const Index: NextPage = () => {
                                 if (dayA.submitedAt < dayB.submitedAt) return -1;
 
                                 return 0;
-                            }).map((user, i) => (
-                                <tr key={user.id}>
-                                    <td>{i + 1}</td>
-                                    <td>{user.nickname}</td>
-                                    <td>{user.days.find(day => day.day === selectedDay).tries}</td>
-                                </tr>
-                            ))}
+                            }).map((user, i) => {
+                                const userDay: Day = user.days.find(day => day.day === selectedDay);
+
+                                return (
+                                    <tr key={user.id}>
+                                        <td>{i + 1}</td>
+                                        <td>{user.nickname}</td>
+                                        <td>{userDay.won ? userDay.tries : "💀"}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     )}
                 </table>

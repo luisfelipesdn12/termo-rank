@@ -60,3 +60,19 @@ main h2 {
     background: #625256;
     border-radius: 6px
 }
+
+.day-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-header svg {
+    cursor: pointer;
+}
+
+.day-header svg.inactive {
+    opacity: 0.5;
+    pointer-events: none;
+}
