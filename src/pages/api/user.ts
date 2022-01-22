@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { database } from "../../firebase";
 import { Day, User } from "../../models";
 
-export default (_req: NextApiRequest, res: NextApiResponse) => {
-    get(ref(database, "users"))
+export default async (_req: NextApiRequest, res: NextApiResponse) => {
+    await get(ref(database, "users"))
         .then((snapshot) => {
             const users: User[] = [];
 

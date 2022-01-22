@@ -1,0 +1,9 @@
+@import "termo.css";
+
+#modal>div {
+    overflow: hidden;
+}
+
+#helpclose {
+    cursor: pointer;
+}
