@@ -1,16 +1,11 @@
-import { customAlphabet } from "nanoid";
-
-const nanoid = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 8);
-
-const getCurrentDate = (): string => new Date()
-    .toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" })
-    .replace(/\//g, "-");
+import { getCurrentDate, nanoid } from "./utils";
 
 export class Day {
     day: string = getCurrentDate();
     tries: number;
     won: boolean;
-    word: string;
+    word?: string;
+    submitedAt: number;
 }
 
 export class User {

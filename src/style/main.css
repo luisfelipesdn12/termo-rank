@@ -1,9 +1,62 @@
 @import "termo.css";
 
+html {
+    overflow: auto;
+}
+
 #modal>div {
     overflow: hidden;
 }
 
 #helpclose {
     cursor: pointer;
+}
+
+main {
+    color: white;
+    height: 100%;
+    font-size: 3em;
+    font-weight: 300;
+    line-height: 1rem;
+}
+
+main table {
+    width: 100%;
+    padding: 0 2rem;
+}
+
+main table th,
+main table td {
+    align-items: center;
+    border-radius: 5%;
+    height: max-content;
+    padding: 2rem;
+}
+
+main table th {
+    font-weight: normal;
+    background-color: #3aa394;
+    border: none;
+}
+
+main table td {
+    background-color: #615458;
+    border: 0.125em solid #4c434730;
+}
+
+
+main h2 {
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.95;
+}
+
+*::-webkit-scrollbar {
+    background-color: transparent;
+    width: 12px
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #625256;
+    border-radius: 6px
 }

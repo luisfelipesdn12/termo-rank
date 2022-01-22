@@ -1,28 +1,55 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { User } from "../models";
-import { MdInput, MdArrowForward } from "react-icons/md";
+import { MdArrowForward } from "react-icons/md";
+import Modal from "../components/Modal";
+import { getCurrentDate } from "../utils";
 
 const Index: NextPage = () => {
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [allDays, setAllDays] = useState<string[]>([]);
     const [users, setUsers] = useState<User[]>([]);
+    const [selectedDay, setSelectedDay] = useState<string>(getCurrentDate());
 
     useEffect(() => {
         setLoading(true);
+
+        // Get All users
         fetch("/api/user")
             .then(res => res.json())
+            // Set the users state
             .then((users: User[]) => {
+                setUsers(users);
                 return users;
             })
-            .then(setUsers)
+            // Get all days that have been played
+            .then((users) => {
+                const days: string[] = [];
+
+                users.forEach(user => {
+                    const userDays = user.days.map(day => day.day);
+
+                    userDays.forEach(day => {
+                        if (!days.includes(day)) {
+                            days.push(day);
+                        }
+                    });
+                });
+
+                if (!days.includes(getCurrentDate())) {
+                    days.push(getCurrentDate());
+                }
+
+                setAllDays(days);
+            })
             .finally(() => setLoading(false));
     }, []);
 
     return (
         <>
             <header>
-                <button onClick={() => setModalOpen(true)} aria-label="sobre" id="how">?</button>
+                <button onClick={() => setModalOpen(!modalOpen)} aria-label="sobre" id="how">?</button>
                 <h1>Termo Rank</h1>
                 <button aria-label="entrar" id="prestats_button">
                     <MdArrowForward
@@ -31,41 +58,51 @@ const Index: NextPage = () => {
                     />
                 </button>
             </header>
-            <div id="modal">
-                <div id="help" className={modalOpen ? "show" : ""}>
-                    <div onClick={() => setModalOpen(false)} id="helpclose">x</div>
-
-                    <p>
-                        Este é um ranking para o jogo de advinhação de palavras <a href="https://term.ooo/" target="_blank" rel="noopener noreferrer">Termo</a> e foi desenvolvido por <a href="https://luisfelipesdn12.now.sh/" target="_blank" rel="noopener noreferrer">Luis Felipe</a>.
-                    </p>
-
-                    <p>
-                        <a href="https://term.ooo/" target="_blank" rel="noopener noreferrer">Termo</a> foi inspirado no <a href="https://www.powerlanguage.co.uk/wordle/" target="_blank" rel="noopener noreferrer">Wordle</a> desenvolvido por <a href="https://fserb.com/" target="_blank" rel="noopener noreferrer">Fernando Serboncini</a>.
-                    </p>
-
-                    <hr />
-
-                    <p>
-                        A partir do código que foi fornecido, você tem acesso à "sua conta" para adicionar suas estatísticas da palavra de hoje. Exemplo de código:
-                    </p>
-
-                    <div className="example">
-                        {new User().id.split("").map((letter, i) => (
-                            <span key={i} role="text" className="letter">
-                                {letter}
-                            </span>
-                        ))}
-                    </div>
-
-                    <hr />
-
-                    <p>
-                        <b>Termo Rank</b> é um projeto em <a href="https://github.com/luisfelipesdn12/termo-rank" target="_blank" rel="noopener noreferrer">código aberto</a> feito por <a href="https://luisfelipesdn12.now.sh/" target="_blank" rel="noopener noreferrer">Luis Felipe</a>.
-                    </p>
-                </div>
-            </div>
+            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
             <main>
+                <h2>Para o dia {selectedDay}</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nickname</th>
+                            <th>Tentativas</th>
+                        </tr>
+                    </thead>
+                    {loading ? (
+                        <tbody>
+                            <tr>
+                                <td colSpan={3} style={{ textAlign: "center" }}>
+                                    Carregando...
+                                </td>
+                            </tr>
+                        </tbody>
+                    ) : (
+                        <tbody>
+                            {users.filter(user => {
+                                const userDays = user.days.map(day => day.day);
+                                return userDays.includes(selectedDay);
+                            }).sort((a, b) => {
+                                const dayA = a.days.find(day => day.day === selectedDay);
+                                const dayB = b.days.find(day => day.day === selectedDay);
 
+                                if (dayA.tries > dayB.tries) return 1;
+                                if (dayA.tries < dayB.tries) return -1;
+
+                                if (dayA.submitedAt > dayB.submitedAt) return 1;
+                                if (dayA.submitedAt < dayB.submitedAt) return -1;
+
+                                return 0;
+                            }).map((user, i) => (
+                                <tr key={user.id}>
+                                    <td>{i + 1}</td>
+                                    <td>{user.nickname}</td>
+                                    <td>{user.days.find(day => day.day === selectedDay).tries}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    )}
+                </table>
             </main>
         </>
     );
