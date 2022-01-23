@@ -9,7 +9,7 @@ Eu e alguns amigos estamos jogando jogos de advinhação de palavras diariamente
 
 Um deles, é o [Termo](https://term.ooo) que é brasileiro com palavras em português e desenvolvido por [Fernando Serboncini](https://fserb.com).
 
-Dado a ideia de um ranking para que possamos acompanhar e compara nossos resultados dia a dia, eu fiz esse projeto.
+Dado a ideia de um ranking para que possamos acompanhar e comparar nossos resultados dia a dia, eu fiz esse projeto.
 
 ## 🧮 Como funciona
 
