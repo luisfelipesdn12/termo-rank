@@ -1,7 +1,7 @@
 import { get, ref, set } from "firebase/database";
 import { NextApiRequest, NextApiResponse } from "next";
 import { database } from "../../firebase";
-import { Day } from "../../models";
+import { Day, User } from "../../models";
 import { getCurrentDate } from "../../utils";
 
 export interface SubmitDaysRequestBody extends Day {
@@ -36,10 +36,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.body.newNickname) {
-        await set(
-            ref(database, `users/${body.userId}/nickname`),
-            req.body.newNickname
-        );
+        await get(ref(database, `users`))
+            .then(snapshot => snapshot.val())
+            .then(async (users: User[]) => {
+                const existentNickname = users.some(u => u.nickname === req.body.newNickname);
+
+                if (!existentNickname) {
+                    await set(
+                        ref(database, `users/${body.userId}/nickname`),
+                        req.body.newNickname
+                    ).catch(console.error);
+                }
+            })
+            .catch(err => console.error);
     }
 
     await get(ref(database, "users/" + body.userId))
