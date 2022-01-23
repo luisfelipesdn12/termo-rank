@@ -177,18 +177,20 @@ const Modal: React.FC<ModalProps> = ({
                             onChange={(e) => setWord(e.target.value)}
                         />
                         <br />
-                        <br />
-                        <label htmlFor="nickname">Alterar nickname (opcional)</label>
-                        <input
-                            id="nickname"
-                            name="nickname"
-                            maxLength={20}
-                            value={nickname}
-                            style={{ textTransform: "none" }}
-                            onChange={(e) => setNickname(e.target.value)}
-                        />
-                        <br />
                     </>}
+
+                    <br />
+                    <label htmlFor="nickname">Alterar nickname (opcional)</label>
+                    <input
+                        id="nickname"
+                        name="nickname"
+                        maxLength={20}
+                        value={nickname}
+                        style={{ textTransform: "none" }}
+                        onChange={(e) => setNickname(e.target.value)}
+                    />
+                    <br />
+
                     {error && <p className="error">{error}</p>}
 
                     <br />
