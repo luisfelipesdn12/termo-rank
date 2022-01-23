@@ -25,5 +25,11 @@ https://user-images.githubusercontent.com/60361387/150683987-53251c14-db20-4691-
 
 - **Firebase** como banco de dados (Realtime Database)
 - **Next.js** para frontend e API (React, Node.js, Typescript)
+- **Vercel** para a hospedagem e implantação contínua
 
-> O estilo do projeto é baseado nas folhas de estilo do [Termo](https://term.ooo).
+> O estilo do projeto é baseado nas folhas de estilo do [Termo](https://term.ooo) criadas por [Fernando Serboncini](https://fserb.com).
+
+## 🙏 Agradecimentos
+
+- [Fernando Serboncini](https://fserb.com) por desenvolver o [Termo](https://term.ooo)
+- [Rafael Omiya](https://github.com/rafomiya) pela ideia/desafio do ranking
