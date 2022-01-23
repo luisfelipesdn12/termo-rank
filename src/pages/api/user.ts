@@ -9,7 +9,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return;
     }
 
-    await get(ref(database, "users/" + req.query.id))
+    const code: string = (req.query.id as string).toUpperCase();
+
+    await get(ref(database, "users/" + code))
         .then((snapshot) => {
             if (!snapshot.exists()) {
                 res.status(404).json({ error: "User not found" });
