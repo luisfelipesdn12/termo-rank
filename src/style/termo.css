@@ -221,7 +221,7 @@ header #how {
     text-align: center
 }
 
-header #how, header #prestats_button {
+header button {
     align-items: center;
     background-color: transparent;
     border: 2px solid #b7aeb4;

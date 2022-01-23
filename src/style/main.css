@@ -8,6 +8,24 @@ html {
     cursor: pointer;
 }
 
+header>div {
+    display: flex;
+    align-items: center;
+    width: max-content;
+}
+
+header>div>* {
+    margin-right: 0.75em;
+}
+
+header>div>*:last-child {
+    margin-right: 0;
+}
+
+header #github {
+    border: none;
+}
+
 main {
     color: white;
     height: 100%;

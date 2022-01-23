@@ -1,7 +1,8 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Day, User } from "../models";
-import { MdArrowForward, MdArrowBack } from "react-icons/md";
+import { MdArrowForward, MdArrowBack, MdCode } from "react-icons/md";
+import { GoMarkGithub } from "react-icons/go";
 import Modal, { ModalType } from "../components/Modal";
 import { getCurrentDate } from "../utils";
 
@@ -64,9 +65,28 @@ const Index: NextPage = () => {
     return (
         <>
             <header>
-                <button onClick={() => setModal(modal === "info" ? null : "info")} aria-label="sobre" id="how">?</button>
+                <div>
+                    <button
+                        onClick={() => setModal(modal === "info" ? null : "info")}
+                        aria-label="sobre" id="how" title="Sobre"
+                    >
+                        ?
+                    </button>
+                    <button
+                        onClick={() => open("https://github.com/luisfelipesdn12/termo-rank")}
+                        aria-label="github" id="github" title="Github"
+                    >
+                        <GoMarkGithub
+                            size="3vh"
+                            color="#b7aeb4"
+                        />
+                    </button>
+                </div>
                 <h1>Termo Rank</h1>
-                <button onClick={() => setModal(modal === "input" ? null : "input")} aria-label="entrar" id="prestats_button">
+                <button
+                    onClick={() => setModal(modal === "input" ? null : "input")}
+                    aria-label="entrar" id="prestats_button" title="Entrar"
+                >
                     <MdArrowForward
                         size="3vh"
                         color="#b7aeb4"
