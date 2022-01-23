@@ -3,25 +3,30 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { database } from "../../firebase";
 import { Day, User } from "../../models";
 
-export default async (_req: NextApiRequest, res: NextApiResponse) => {
-    await get(ref(database, "users"))
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+    if (!req.query.id) {
+        res.status(400).json({ error: "Missing id" });
+        return;
+    }
+
+    await get(ref(database, "users/" + req.query.id))
         .then((snapshot) => {
-            const users: User[] = [];
+            if (!snapshot.exists()) {
+                res.status(404).json({ error: "User not found" });
+                return;
+            }
 
-            snapshot.forEach((childSnapshot) => {
-                const user: User = childSnapshot.val();
-                const days: Day[] = [];
+            const user: User = snapshot.val();
+            const days: Day[] = [];
 
-                childSnapshot.child("days").forEach((daySnapshot) => {
-                    const day: Day = daySnapshot.val();
-                    days.push(day);
-                });
-
-                user.days = days;
-                users.push(user);
+            snapshot.child("days").forEach((daySnapshot) => {
+                const day: Day = daySnapshot.val();
+                days.push(day);
             });
 
-            res.status(200).json(users);
+            user.days = days;
+            delete user.id;
+            res.status(200).json(user);
         })
         .catch((error) => {
             res.status(500).json(error);

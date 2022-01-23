@@ -735,7 +735,7 @@ main .letter.done {
     width: calc(100vw - 4vh)
 }
 
-#help, #stats {
+#modal>div {
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     background-color: rgba(34, 30, 32, .75);
@@ -750,15 +750,15 @@ main .letter.done {
     z-index: 1000
 }
 
-#help.show, #stats.show {
+#modal>div.show {
     display: block
 }
 
-#help {
+#modal>div {
     padding: 5em
 }
 
-#helpclose {
+#modalclose {
     color: #666;
     font-size: 4em;
     font-weight: 300;
@@ -767,24 +767,24 @@ main .letter.done {
     top: .1em
 }
 
-#help h2 {
+#modal>div h2 {
     font-size: 4em;
     font-weight: 500;
     margin: 0
 }
 
-#help p {
+#modal>div p {
     color: #bbb;
     font-size: 3em;
     font-weight: 300;
     line-height: 1.35em
 }
 
-#help .example .letter {
+#modal>div .example .letter {
     font-size: 3.5em
 }
 
-#help .letter {
+#modal>div .letter {
     align-items: center;
     border: .125em solid #4c4347;
     border-radius: 10%;
@@ -798,41 +798,41 @@ main .letter.done {
     width: 2em
 }
 
-#help p .letter {
+#modal>div p .letter {
     font-size: 1em;
     height: 1.75em;
     vertical-align: 15%;
     width: 1.75em
 }
 
-#help .letter.right {
+#modal>div .letter.right {
     background-color: #3aa394;
     border: none
 }
 
-#help .letter.place {
+#modal>div .letter.place {
     background-color: #d3ad69;
     border: none
 }
 
-#help .letter.wrong {
+#modal>div .letter.wrong {
     background-color: #191516;
     border: none;
     color: #5e5c5c
 }
 
-#help hr {
+#modal>div hr {
     border: 1px solid #504a4c;
     margin: 5em auto;
     width: 80%
 }
 
-#help p b {
+#modal>div p b {
     color: #fafaff;
     font-weight: 500
 }
 
-#help p a {
+#modal>div p a {
     color: #ebe
 }
 

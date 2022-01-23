@@ -4,11 +4,7 @@ html {
     overflow: auto;
 }
 
-#modal>div {
-    overflow: hidden;
-}
-
-#helpclose {
+#modalclose {
     cursor: pointer;
 }
 
@@ -72,7 +68,129 @@ main h2 {
     cursor: pointer;
 }
 
+.day-header svg:first-child {
+    margin-left: 2rem;
+}
+
+.day-header svg:last-child {
+    margin-right: 2rem;
+}
+
 .day-header svg.inactive {
     opacity: 0.5;
     pointer-events: none;
+}
+
+#input-modal .row {
+    width: fit-content;
+    gap: 0 var(--letter-gap);
+}
+
+#input-modal .letter {
+    --happy-jump: 55%;
+    align-items: center;
+    aspect-ratio: 1;
+    background-color: #615458;
+    border-radius: 10%;
+    box-sizing: border-box;
+    display: inline-block;
+    display: flex;
+    font-size: var(--letter-font);
+    justify-content: center;
+    text-transform: uppercase
+}
+
+#input-modal .letter.ontype {
+    -webkit-animation: type .15s ease-out 0s none;
+    animation: type .15s ease-out 0s none
+}
+
+#input-modal .letter.empty {
+    background-color: transparent;
+    border: .125em solid #4c4347
+}
+
+#input-modal .letter.right {
+    --color: #3aa394;
+    -webkit-animation: flip .5s linear 0s forwards;
+    animation: flip .5s linear 0s forwards
+}
+
+#input-modal .letter.place {
+    --color: #d3ad69;
+    -webkit-animation: flip .5s linear 0s forwards;
+    animation: flip .5s linear 0s forwards
+}
+
+#input-modal .letter.wrong {
+    --color: #312a2c;
+    -webkit-animation: flip .5s linear 0s forwards;
+    animation: flip .5s linear 0s forwards
+}
+
+#input-modal .letter.done {
+    background-color: #3aa394
+}
+
+#input-modal>div .letter {
+    width: 2em;
+    height: 2em;
+}
+
+#input-modal input {
+    border-radius: 2%;
+    box-sizing: border-box;
+    font-size: 5rem;
+    justify-content: center;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    color: white;
+    letter-spacing: 1rem;
+    background-color: transparent;
+    border: .125em solid #4c4347;
+}
+
+#input-modal input::-webkit-input-placeholder {
+    color: #4c4347AA;
+}
+
+#input-modal button {
+    border: none;
+    font-size: 4rem;
+    border-radius: 2%;
+    margin-top: 1rem;
+    color: white;
+    padding: 1rem 3rem;
+    cursor: pointer;
+    background-color: #3aa394;
+}
+
+form label {
+    color: #bbb;
+    font-size: 3em;
+    font-weight: 300;
+    line-height: 1.35em
+}
+
+#input-modal form p.error {
+    color: #c96161;
+}
+
+#input-modal .letter.option {
+    width: 2.5em;
+    height: 2.5em;
+    font-size: 4em;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    #input-modal>div .letter {
+        width: calc(100vw / 8);
+        height: calc(100vw / 8);
+    }
+
+    #input-modal .letter.option {
+        width: calc(100vw / 8);
+        height: calc(100vw / 8);
+    }
 }

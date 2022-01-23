@@ -2,21 +2,19 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Day, User } from "../models";
 import { MdArrowForward, MdArrowBack } from "react-icons/md";
-import Modal from "../components/Modal";
+import Modal, { ModalType } from "../components/Modal";
 import { getCurrentDate } from "../utils";
 
 const Index: NextPage = () => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [allDays, setAllDays] = useState<string[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [selectedDay, setSelectedDay] = useState<string>(getCurrentDate());
+    const [modal, setModal] = useState<ModalType>();
 
     useEffect(() => {
-        setLoading(true);
-
         // Get All users
-        fetch("/api/user")
+        fetch("/api/users")
             .then(res => res.json())
             // Set the users state
             .then((users: User[]) => {
@@ -44,21 +42,21 @@ const Index: NextPage = () => {
                 setAllDays(days.sort());
             })
             .finally(() => setLoading(false));
-    }, []);
+    }, [modal]);
 
     return (
         <>
             <header>
-                <button onClick={() => setModalOpen(!modalOpen)} aria-label="sobre" id="how">?</button>
+                <button onClick={() => setModal(modal === "info" ? null : "info")} aria-label="sobre" id="how">?</button>
                 <h1>Termo Rank</h1>
-                <button aria-label="entrar" id="prestats_button">
+                <button onClick={() => setModal(modal === "input" ? null : "input")} aria-label="entrar" id="prestats_button">
                     <MdArrowForward
                         size="3vh"
                         color="#b7aeb4"
                     />
                 </button>
             </header>
-            <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+            <Modal modal={modal} onClose={() => setModal(null)} />
             <main>
                 <div className="day-header">
                     <MdArrowBack
@@ -99,6 +97,9 @@ const Index: NextPage = () => {
                             }).sort((a, b) => {
                                 const dayA = a.days.find(day => day.day === selectedDay);
                                 const dayB = b.days.find(day => day.day === selectedDay);
+
+                                if (!dayA.won && dayB.won) return 1;
+                                if (dayA.won && !dayB.won) return -1;
 
                                 if (dayA.tries > dayB.tries) return 1;
                                 if (dayA.tries < dayB.tries) return -1;

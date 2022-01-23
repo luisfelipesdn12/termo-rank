@@ -9,7 +9,7 @@ export class Day {
 }
 
 export class User {
-    readonly id: string = nanoid();
+    id: string = nanoid();
     nickname: string;
     days: Day[];
 }
