@@ -22,8 +22,11 @@ const Modal: React.FC<ModalProps> = ({
     const [won, setWon] = useState<boolean>(true);
     const [tries, setTries] = useState<number>(4);
     const [word, setWord] = useState<string>();
+    const [nickname, setNickname] = useState<string>();
 
     const [sent, setSent] = useState<boolean>(false);
+
+    useEffect(() => setNickname(user?.nickname ?? undefined), [user]);
 
     return (
         <div id="modal">
@@ -109,8 +112,9 @@ const Modal: React.FC<ModalProps> = ({
                     e.preventDefault();
 
                     const body: Partial<SubmitDaysRequestBody> = {
-                        userId: code,
                         won: won,
+                        userId: code,
+                        newNickname: nickname && nickname !== "" ? nickname : undefined,
                         tries: won ? tries : 6,
                         word: won ? word : undefined,
                     };
@@ -171,6 +175,17 @@ const Modal: React.FC<ModalProps> = ({
                             minLength={5}
                             value={word}
                             onChange={(e) => setWord(e.target.value)}
+                        />
+                        <br />
+                        <br />
+                        <label htmlFor="nickname">Alterar nickname (opcional)</label>
+                        <input
+                            id="nickname"
+                            name="nickname"
+                            maxLength={20}
+                            value={nickname}
+                            style={{ textTransform: "none" }}
+                            onChange={(e) => setNickname(e.target.value)}
                         />
                         <br />
                     </>}

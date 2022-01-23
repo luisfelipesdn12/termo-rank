@@ -6,6 +6,7 @@ import { getCurrentDate } from "../../utils";
 
 export interface SubmitDaysRequestBody extends Day {
     userId: string;
+    newNickname?: string;
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -32,6 +33,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(400).json({ error: `Missing ${key}` });
             return;
         }
+    }
+
+    if (req.body.newNickname) {
+        await set(
+            ref(database, `users/${body.userId}/nickname`),
+            req.body.newNickname
+        );
     }
 
     await get(ref(database, "users/" + body.userId))
