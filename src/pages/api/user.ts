@@ -21,6 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
             snapshot.child("days").forEach((daySnapshot) => {
                 const day: Day = daySnapshot.val();
+                delete day.word;
                 days.push(day);
             });
 
