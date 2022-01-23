@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             wordInputs = wordInputs.sort((a, b) => b.count - a.count);
             const word = wordInputs[0].word;
 
-            res.status(200).json(wordInputs);
+            res.status(200).json({ word, inputs: wordInputs });
         })
         .catch((error) => {
             res.status(500).json(error);

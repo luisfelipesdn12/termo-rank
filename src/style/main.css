@@ -197,6 +197,29 @@ form p.error,
     background-color: #3aa394AA;
 }
 
+#word-for-the-day {
+    display: flex;
+    margin-top: 2rem;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#word-for-the-day>* {
+    margin: 2rem 0;
+}
+
+#word-inputs, #no-info-word {
+    opacity: 0.5;
+    font-size: 0.75em;
+    line-height: normal;
+    text-align: center;
+}
+
+#no-info-word {
+    opacity: 0.3;
+}
+
 @media (max-width: 600px) {
     #input-modal>div .letter {
         width: calc(100vw / 8);

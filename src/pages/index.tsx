@@ -11,6 +11,13 @@ const Index: NextPage = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedDay, setSelectedDay] = useState<string>(getCurrentDate());
     const [modal, setModal] = useState<ModalType>();
+    const [wordForTheDay, setWordForTheDay] = useState<{
+        word: string;
+        inputs: {
+            word: string;
+            count: number;
+        }[];
+    }>();
 
     useEffect(() => {
         // Get All users
@@ -43,6 +50,16 @@ const Index: NextPage = () => {
             })
             .finally(() => setLoading(false));
     }, [modal]);
+
+    useEffect(() => {
+        if (selectedDay && selectedDay !== getCurrentDate()) {
+            setWordForTheDay(undefined);
+            fetch(`/api/word?day=${selectedDay}`)
+                .then(res => res.json())
+                .then(setWordForTheDay)
+                .catch(console.error);
+        }
+    }, [selectedDay]);
 
     return (
         <>
@@ -130,6 +147,17 @@ const Index: NextPage = () => {
                         </tbody>
                     )}
                 </table>
+                {selectedDay !== getCurrentDate() && <div id="word-for-the-day">
+                    {wordForTheDay ? <>
+                        <p>Palavra:</p>
+                        <h2>{wordForTheDay.word}</h2>
+                        {wordForTheDay.inputs.length > 1 && (
+                            <p id="word-inputs">{wordForTheDay.inputs.map(input => {
+                                return `${input.word} (${input.count})`;
+                            }).join(", ")}</p>
+                        )}
+                    </> : <p id="no-info-word">Sem informações de qual palavra foi :/</p>}
+                </div>}
             </main>
         </>
     );
