@@ -5,11 +5,11 @@
 
 ## 📝 Sobre
 
-Eu e alguns amigos estamos jogando jogos de advinhação de palavras diariamente. Todos os dias, uma palavra nova é sorteada e temos 6 tentativas para descobrir a palavra.
+Eu e alguns amigos estamos jogando jogos de adivinhação de palavras diariamente. Todos os dias, uma palavra nova é sorteada e temos 6 tentativas para descobrir a palavra.
 
 Um deles, é o [Termo](https://term.ooo) que é brasileiro com palavras em português e desenvolvido por [Fernando Serboncini](https://fserb.com).
 
-Dado a ideia de um ranking para que possamos acompanhar e compara nossos resultados dia a dia, eu fiz esse projeto.
+Dado a ideia de um ranking para que possamos acompanhar e comparar nossos resultados dia a dia, eu fiz esse projeto.
 
 ## 🧮 Como funciona
 
