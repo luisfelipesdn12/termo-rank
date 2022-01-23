@@ -137,6 +137,7 @@ main h2 {
     height: 2em;
 }
 
+form input,
 #input-modal input {
     border-radius: 2%;
     box-sizing: border-box;
@@ -150,10 +151,12 @@ main h2 {
     border: .125em solid #4c4347;
 }
 
+form input::-webkit-input-placeholder,
 #input-modal input::-webkit-input-placeholder {
     color: #4c4347AA;
 }
 
+form button,
 #input-modal button {
     border: none;
     font-size: 4rem;
@@ -172,6 +175,12 @@ form label {
     line-height: 1.35em
 }
 
+main>form label {
+    color: white;
+    font-size: 3rem;
+}
+
+form p.error,
 #input-modal form p.error {
     color: #c96161;
 }
@@ -181,6 +190,11 @@ form label {
     height: 2.5em;
     font-size: 4em;
     cursor: pointer;
+}
+
+.copyable:hover {
+    cursor: pointer;
+    background-color: #3aa394AA;
 }
 
 @media (max-width: 600px) {

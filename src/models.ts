@@ -11,5 +11,5 @@ export class Day {
 export class User {
     id: string = nanoid();
     nickname: string;
-    days: Day[];
+    days?: Day[];
 }
