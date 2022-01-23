@@ -13,7 +13,7 @@ Dado a ideia de um ranking para que possamos acompanhar e compara nossos resulta
 
 ## 🧮 Como funciona
 
-Eu mesmo adiciono os usuários e a partir disse forneço um código de acesso para que possam inserir os resultados.
+Eu mesmo adiciono os usuários e a partir disso forneço um código de acesso para que possam inserir os resultados.
 
 ![creation](./public/demo/create.png)
 
