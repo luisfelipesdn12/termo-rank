@@ -100,14 +100,20 @@ const Index: NextPage = () => {
                         onClick={() => {
                             setSelectedDay(allDays[allDays.findIndex(d => d === selectedDay) - 1]);
                         }}
-                        className={allDays.findIndex(d => d === selectedDay) === 0 ? "inactive" : ""}
+                        className={
+                            loading || allDays.findIndex(d => d === selectedDay) === 0 ?
+                                "inactive" : ""
+                        }
                     />
                     <h2>Para o dia {selectedDay}</h2>
                     <MdArrowForward
                         onClick={() => {
                             setSelectedDay(allDays[allDays.findIndex(d => d === selectedDay) + 1]);
                         }}
-                        className={allDays.findIndex(d => d === selectedDay) === allDays.length - 1 ? "inactive" : ""}
+                        className={
+                            loading || allDays.findIndex(d => d === selectedDay) === allDays.length - 1 ?
+                                "inactive" : ""
+                        }
                     />
                 </div>
                 <table>
