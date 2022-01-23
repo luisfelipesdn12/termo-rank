@@ -89,6 +89,14 @@ const Index: NextPage = () => {
                                 </td>
                             </tr>
                         </tbody>
+                    ) : users.length === 0 || users.every(user => user.days.length === 0) ? (
+                        <tbody>
+                            <tr>
+                                <td colSpan={3} style={{ textAlign: "center" }}>
+                                    Nada por enquanto...
+                                </td>
+                            </tr>
+                        </tbody>
                     ) : (
                         <tbody>
                             {users.filter(user => {
