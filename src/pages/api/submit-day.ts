@@ -36,10 +36,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.body.newNickname) {
-        await get(ref(database, `users`))
+        await get(ref(database, "users"))
             .then(snapshot => snapshot.val())
-            .then(async (users: User[]) => {
-                const existentNickname = users.some(u => u.nickname === req.body.newNickname);
+            .then(async (users: {
+                [key: string]: User;
+            }) => {
+                let existentNickname: boolean = false;
+
+                for (const userId in users) {
+                    if (users[userId].nickname === req.body.newNickname) {
+                        existentNickname = true;
+                        break;
+                    }
+                }
 
                 if (!existentNickname) {
                     await set(
@@ -48,7 +57,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                     ).catch(console.error);
                 }
             })
-            .catch(err => console.error);
+            .catch(console.error);
     }
 
     await get(ref(database, "users/" + body.userId))
