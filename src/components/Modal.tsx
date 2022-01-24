@@ -1,3 +1,4 @@
+import { GetStaticProps } from "next";
 import { useEffect, useState } from "react";
 import { User } from "../models";
 import { SubmitDaysRequestBody } from "../pages/api/submit-day";
@@ -8,11 +9,13 @@ export type ModalType = "info" | "input" | null;
 interface ModalProps {
     modal: ModalType;
     onClose: () => void;
+    sampleCode?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
     modal,
     onClose,
+    sampleCode = nanoid(),
 }) => {
     const [_, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
@@ -48,7 +51,7 @@ const Modal: React.FC<ModalProps> = ({
                 </p>
 
                 <div className="example">
-                    {nanoid().split("").map((letter, i) => (
+                    {sampleCode.split("").map((letter, i) => (
                         <span key={i} role="text" className="letter">
                             {letter}
                         </span>
@@ -97,7 +100,7 @@ const Modal: React.FC<ModalProps> = ({
                     <br />
                     <input
                         value={code} required
-                        placeholder={nanoid()}
+                        placeholder={sampleCode}
                         maxLength={8} minLength={8}
                         onChange={(e) => setCode(e.target.value)}
                     />

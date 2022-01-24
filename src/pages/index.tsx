@@ -1,12 +1,16 @@
-import { NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 import { Day, User } from "../models";
 import { MdArrowForward, MdArrowBack, MdCode } from "react-icons/md";
 import { GoMarkGithub } from "react-icons/go";
 import Modal, { ModalType } from "../components/Modal";
-import { getCurrentDate } from "../utils";
+import { getCurrentDate, nanoid } from "../utils";
 
-const Index: NextPage = () => {
+interface IndexPageProps {
+    sampleCode: string;
+}
+
+const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [allDays, setAllDays] = useState<string[]>([]);
     const [users, setUsers] = useState<User[]>([]);
@@ -93,7 +97,11 @@ const Index: NextPage = () => {
                     />
                 </button>
             </header>
-            <Modal modal={modal} onClose={() => setModal(null)} />
+            <Modal
+                modal={modal}
+                onClose={() => setModal(null)}
+                sampleCode={sampleCode}
+            />
             <main>
                 <div className="day-header">
                     <MdArrowBack
@@ -190,3 +198,11 @@ const Index: NextPage = () => {
 };
 
 export default Index;
+
+export const getStaticProps: GetStaticProps = async (context) => {
+    return {
+        props: {
+            sampleCode: nanoid(),
+        },
+    };
+};
