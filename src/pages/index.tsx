@@ -1,9 +1,9 @@
-import { GetStaticProps, NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
-import { Day, User } from "../models";
-import { MdArrowForward, MdArrowBack, MdCode } from "react-icons/md";
 import { GoMarkGithub } from "react-icons/go";
+import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import Modal, { ModalType } from "../components/Modal";
+import { Day, User } from "../models";
 import { getCurrentDate, nanoid } from "../utils";
 
 interface IndexPageProps {
@@ -199,7 +199,7 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
 
 export default Index;
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
     return {
         props: {
             sampleCode: nanoid(),
