@@ -171,7 +171,7 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
                                 const userDay: Day = user.days.find(day => day.day === selectedDay);
 
                                 return (
-                                    <tr key={user.id}>
+                                    <tr key={i}>
                                         <td>{i + 1}</td>
                                         <td>{user.nickname}</td>
                                         <td>{userDay.won ? userDay.tries : "💀"}</td>
