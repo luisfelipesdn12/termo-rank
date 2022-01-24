@@ -1,28 +1,28 @@
 import { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { GoMarkGithub } from "react-icons/go";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import Modal, { ModalType } from "../components/Modal";
 import { Day, User } from "../models";
 import { getCurrentDate, nanoid } from "../utils";
+import { WordForTheDaySuccessReturn } from "./api/word";
 
 interface IndexPageProps {
     sampleCode: string;
 }
 
 const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
+    const router = useRouter();
+
     const [loading, setLoading] = useState<boolean>(true);
     const [allDays, setAllDays] = useState<string[]>([]);
     const [users, setUsers] = useState<User[]>([]);
     const [selectedDay, setSelectedDay] = useState<string>(getCurrentDate());
     const [modal, setModal] = useState<ModalType>();
-    const [wordForTheDay, setWordForTheDay] = useState<{
-        word: string;
-        inputs: {
-            word: string;
-            count: number;
-        }[];
-    }>();
+    const [wordForTheDay, setWordForTheDay] = useState<WordForTheDaySuccessReturn>();
+    const [wordsForTheDaysBank, setWordsForTheDaysBank] = useState<WordForTheDaySuccessReturn[]>([]);
+    const [loadingWordForTheDay, setLoadingWordForTheDay] = useState<boolean>(true);
 
     useEffect(() => {
         // Get All users
@@ -57,12 +57,25 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
     }, [modal]);
 
     useEffect(() => {
+        setLoadingWordForTheDay(true);
+
         if (selectedDay && selectedDay !== getCurrentDate()) {
+            if (wordsForTheDaysBank.some(w => w.day === selectedDay)) {
+                setWordForTheDay(wordsForTheDaysBank.find(w => w.day === selectedDay));
+                setLoadingWordForTheDay(false);
+            } else {
+                fetch(`/api/word?day=${selectedDay}`)
+                    .then(res => res.json())
+                    .then((wordForTheDay: WordForTheDaySuccessReturn) => {
+                        setWordForTheDay(wordForTheDay);
+                        setWordsForTheDaysBank(prev => [...prev, wordForTheDay]);
+                    })
+                    .catch(console.error)
+                    .finally(() => setLoadingWordForTheDay(false));
+            }
+        } else {
             setWordForTheDay(undefined);
-            fetch(`/api/word?day=${selectedDay}`)
-                .then(res => res.json())
-                .then(setWordForTheDay)
-                .catch(console.error);
+            setLoadingWordForTheDay(false);
         }
     }, [selectedDay]);
 
@@ -172,7 +185,7 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
 
                                 return (
                                     <tr key={i}>
-                                        <td>{i + 1}</td>
+                                        <td>{i + 1}{i === 0 ? " 🥇" : i === 1 ? " 🥈" : i === 2 && " 🥉"}</td>
                                         <td>{user.nickname}</td>
                                         <td>{userDay.won ? userDay.tries : "💀"}</td>
                                     </tr>
@@ -181,11 +194,11 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
                         </tbody>
                     )}
                 </table>
-                {selectedDay !== getCurrentDate() && <div id="word-for-the-day">
-                    {wordForTheDay ? <>
+                {!loadingWordForTheDay && selectedDay !== getCurrentDate() && <div id="word-for-the-day">
+                    {wordForTheDay && wordForTheDay.word ? <>
                         <p>Palavra:</p>
                         <h2>{wordForTheDay.word}</h2>
-                        {wordForTheDay.inputs.length > 1 && (
+                        {wordForTheDay.inputs && wordForTheDay.inputs.length > 1 && (
                             <p id="word-inputs">{wordForTheDay.inputs.map(input => {
                                 return `${input.word} (${input.count})`;
                             }).join(", ")}</p>

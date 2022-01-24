@@ -6,7 +6,18 @@ import { getCurrentDate } from "../../utils";
 
 const DAY_PATTERN = /^\d{2}-\d{2}-\d{4}$/;
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export interface WordForTheDaySuccessReturn {
+    day: string;
+    word: string;
+    inputs: {
+        word: string;
+        count: number;
+    }[];
+}
+
+export type WordForTheDayReturn = WordForTheDaySuccessReturn | { error: string };
+
+export default async (req: NextApiRequest, res: NextApiResponse<WordForTheDayReturn>) => {
     if (!req.query.day) {
         res.status(400).json({ error: "Missing day" });
         return;
@@ -53,7 +64,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             wordInputs = wordInputs.sort((a, b) => b.count - a.count);
             const word = wordInputs[0].word;
 
-            res.status(200).json({ word, inputs: wordInputs });
+            res.status(200).json({
+                day: req.query.day as string,
+                word, inputs: wordInputs
+            });
         })
         .catch((error) => {
             res.status(500).json(error);
