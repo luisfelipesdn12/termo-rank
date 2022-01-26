@@ -1,5 +1,4 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { GoMarkGithub } from "react-icons/go";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
@@ -13,8 +12,6 @@ interface IndexPageProps {
 }
 
 const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
-    const router = useRouter();
-
     const [loading, setLoading] = useState<boolean>(true);
     const [allDays, setAllDays] = useState<string[]>([]);
     const [users, setUsers] = useState<User[]>([]);

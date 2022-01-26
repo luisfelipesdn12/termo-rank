@@ -1,4 +1,3 @@
-import { GetStaticProps } from "next";
 import { useEffect, useState } from "react";
 import { User } from "../models";
 import { SubmitDaysRequestBody } from "../pages/api/submit-day";
@@ -17,9 +16,18 @@ const Modal: React.FC<ModalProps> = ({
     onClose,
     sampleCode = nanoid(),
 }) => {
+    const [code, setCode] = useState<string>();
+
+    useEffect(() => {
+        setCode(window.localStorage.getItem("code"));
+    }, []);
+
+    useEffect(() => {
+        window.localStorage.setItem("code", code);
+    }, [code]);
+
     const [_, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [code, setCode] = useState<string>("");
     const [user, setUser] = useState<User>();
 
     const [won, setWon] = useState<boolean>(true);
