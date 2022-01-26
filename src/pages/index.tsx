@@ -1,57 +1,63 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GoMarkGithub } from "react-icons/go";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import Modal, { ModalType } from "../components/Modal";
 import { Day, User } from "../models";
 import { getCurrentDate, nanoid } from "../utils";
 import { WordForTheDaySuccessReturn } from "./api/word";
+import useSWR from "swr";
 
 interface IndexPageProps {
     sampleCode: string;
 }
 
 const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
-    const [loading, setLoading] = useState<boolean>(true);
     const [allDays, setAllDays] = useState<string[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
     const [selectedDay, setSelectedDay] = useState<string>(getCurrentDate());
     const [modal, setModal] = useState<ModalType>();
     const [wordForTheDay, setWordForTheDay] = useState<WordForTheDaySuccessReturn>();
     const [wordsForTheDaysBank, setWordsForTheDaysBank] = useState<WordForTheDaySuccessReturn[]>([]);
     const [loadingWordForTheDay, setLoadingWordForTheDay] = useState<boolean>(true);
 
-    useEffect(() => {
-        // Get All users
-        fetch("/api/users")
+    const [lastUsers, setLastUsers] = useState<User[]>();
+
+    const {
+        data: users = lastUsers,
+        error, mutate: mutateUsers,
+    } = useSWR<User[]>("/api/users", async (url) => {
+        return await fetch(url)
             .then(res => res.json())
-            // Set the users state
-            .then((users: User[]) => {
-                setUsers(users);
+            .then(users => {
+                setLastUsers(users);
                 return users;
-            })
-            // Get all days that have been played
-            .then((users) => {
-                const days: string[] = [];
+            });
+    });
 
-                users.forEach(user => {
-                    const userDays = user.days.map(day => day.day);
+    const loading = useMemo(() => !error && !users, [error, users]);
 
-                    userDays.forEach(day => {
-                        if (!days.includes(day)) {
-                            days.push(day);
-                        }
-                    });
+    // Get all days that have been played
+    useEffect(() => {
+        if (users) {
+            const days: string[] = [];
+
+            users.forEach(user => {
+                const userDays = user.days.map(day => day.day);
+
+                userDays.forEach(day => {
+                    if (!days.includes(day)) {
+                        days.push(day);
+                    }
                 });
+            });
 
-                if (!days.includes(getCurrentDate())) {
-                    days.push(getCurrentDate());
-                }
+            if (!days.includes(getCurrentDate())) {
+                days.push(getCurrentDate());
+            }
 
-                setAllDays(days.sort());
-            })
-            .finally(() => setLoading(false));
-    }, [modal]);
+            setAllDays(days.sort());
+        }
+    }, [users]);
 
     useEffect(() => {
         setLoadingWordForTheDay(true);
@@ -109,7 +115,10 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
             </header>
             <Modal
                 modal={modal}
-                onClose={() => setModal(null)}
+                onClose={() => {
+                    setModal(null);
+                    mutateUsers();
+                }}
                 sampleCode={sampleCode}
             />
             <main>
