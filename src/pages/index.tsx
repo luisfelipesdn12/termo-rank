@@ -59,6 +59,7 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
         }
     }, [users]);
 
+    // Get the word for the day if it's not already loaded
     useEffect(() => {
         setLoadingWordForTheDay(true);
 
@@ -81,6 +82,30 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
             setLoadingWordForTheDay(false);
         }
     }, [selectedDay]);
+
+    // Close the modal on click outside or ESC
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const element = event.target as HTMLElement;
+            if (!element.closest("#modal")) {
+                setModal(undefined);
+            }
+        };
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setModal(undefined);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleEscape);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscape);
+        };
+    }, []);
 
     return (
         <>
