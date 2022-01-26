@@ -65,6 +65,18 @@ main h2 {
     opacity: 0.95;
 }
 
+.buttons-container {
+    display: flex;
+}
+
+.buttons-container>button {
+    margin-right: 0.5em;
+}
+
+.buttons-container>button:last-child {
+    margin-right: 0;
+}
+
 *::-webkit-scrollbar {
     background-color: transparent;
     width: 12px
@@ -184,6 +196,12 @@ form button,
     padding: 1rem 3rem;
     cursor: pointer;
     background-color: #3aa394;
+}
+
+form button.secondary,
+#input-modal button.secondary {
+    opacity: 0.9;
+    background-color: #d3ad69;
 }
 
 form label {

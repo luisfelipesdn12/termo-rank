@@ -16,16 +16,6 @@ const Modal: React.FC<ModalProps> = ({
     onClose,
     sampleCode = nanoid(),
 }) => {
-    const [code, setCode] = useState<string>();
-
-    useEffect(() => {
-        setCode(window.localStorage.getItem("code"));
-    }, []);
-
-    useEffect(() => {
-        window.localStorage.setItem("code", code);
-    }, [code]);
-
     const [_, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [user, setUser] = useState<User>();
@@ -36,6 +26,51 @@ const Modal: React.FC<ModalProps> = ({
     const [nickname, setNickname] = useState<string>();
 
     const [sent, setSent] = useState<boolean>(false);
+
+    const [userConfirmed, setUserConfirmed] = useState<boolean>(false);
+    const [code, setCode] = useState<string>();
+
+    const getUser = async (code: string) => {
+        setLoading(true);
+        setError(undefined);
+        await fetch("/api/user?id=" + code)
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.json();
+                }
+
+                setUser(undefined);
+
+                if (res.status === 404) {
+                    throw new Error("Código inválido");
+                }
+
+                throw new Error("Erro ao buscar usuário");
+            })
+            .then(setUser)
+            .catch(e => setError(e.message))
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        const localStorageCode = window.localStorage.getItem("code")
+        if (
+            localStorageCode &&
+            localStorageCode !== "null" &&
+            localStorageCode !== "undefined"
+        ) {
+            setCode(localStorageCode)
+
+            if (localStorageCode.length === 8) {
+                getUser(localStorageCode)
+                    .then(() => setUserConfirmed(false));
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        window.localStorage.setItem("code", code);
+    }, [code]);
 
     useEffect(() => setNickname(user?.nickname ?? undefined), [user]);
 
@@ -81,140 +116,144 @@ const Modal: React.FC<ModalProps> = ({
                     {user && (<><br /> para {user.nickname}</>)}
                 </p>
 
-                {!user && <form onSubmit={(e) => {
-                    e.preventDefault();
-
-                    setLoading(true);
-                    setError(undefined);
-                    fetch("/api/user?id=" + code)
-                        .then((res) => {
-                            if (res.status === 200) {
-                                return res.json();
-                            }
-
-                            setUser(undefined);
-
-                            if (res.status === 404) {
-                                throw new Error("Código inválido");
-                            }
-
-                            throw new Error("Erro ao buscar usuário");
-                        })
-                        .then(setUser)
-                        .catch(e => setError(e.message))
-                        .finally(() => setLoading(false));
-                }}>
-                    <label htmlFor="code">Digite seu código:</label>
-                    <br />
-                    <input
-                        value={code} required
-                        placeholder={sampleCode}
-                        maxLength={8} minLength={8}
-                        onChange={(e) => setCode(e.target.value)}
-                    />
-                    {error && <p className="error">{error}</p>}
-                    <br />
-                    <button type="submit">
-                        Entrar
-                    </button>
-                </form>}
-
-                {!sent && user && <form onSubmit={(e) => {
-                    e.preventDefault();
-
-                    const body: Partial<SubmitDaysRequestBody> = {
-                        won: won,
-                        userId: code,
-                        newNickname: nickname && nickname !== "" ? nickname : undefined,
-                        tries: won ? tries : 6,
-                        word: won ? word : undefined,
-                    };
-
-                    setLoading(true);
-                    fetch("/api/submit-day", {
-                        method: "POST",
-                        body: JSON.stringify(body),
-                    }).then(res => {
-                        if (res.status === 200) {
-                            setSent(true);
-                            return;
-                        }
-
-                        throw new Error("Erro ao enviar resultados");
-                    }).catch(e => {
-                        console.error(e);
-                        setError(e.message);
-                    }).finally(() => setLoading(false));
-                }}>
-                    <label htmlFor="won">Você conseguiu advinhar a palavra?</label>
-                    <br />
-                    <div role="list" className="row">
-                        <div
-                            onClick={() => setWon(true)}
-                            className={"option letter " + (won ? "right" : "empty")}
-                        >
-                            Sim
-                        </div>
-                        <div
-                            onClick={() => setWon(false)}
-                            className={"option letter " + (won ? "empty" : "right")}
-                        >
-                            Não
-                        </div>
-                    </div>
-
-                    {won && <>
+                {!user ? (
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        getUser(code)
+                            .then(() => setUserConfirmed(true));
+                    }}>
+                        <label htmlFor="code">Digite seu código:</label>
                         <br />
-                        <label htmlFor="trie">Em quantas tentativas?</label>
-                        <div role="list" className="row">
-                            {[1, 2, 3, 4, 5, 6].map((trie, i) => (
-                                <div
-                                    key={i}
-                                    onClick={() => setTries(trie)}
-                                    className={"option letter " + (tries === trie ? "right" : "empty")}
-                                >
-                                    {trie}
-                                </div>
-                            ))}
-                        </div>
-                        <br />
-                        <label htmlFor="word">Qual foi a palavra? (opcional)</label>
                         <input
-                            id="word"
-                            name="word"
-                            maxLength={5}
-                            minLength={5}
-                            value={word}
-                            onChange={(e) => setWord(e.target.value)}
+                            value={code} required
+                            placeholder={sampleCode}
+                            maxLength={8} minLength={8}
+                            onChange={(e) => setCode(e.target.value)}
+                        />
+                        {error && <p className="error">{error}</p>}
+                        <br />
+                        <button type="submit">
+                            Entrar
+                        </button>
+                    </form>
+                ) : !userConfirmed ? (
+                    <>
+                        <p>
+                            O usuário <strong>{user.nickname}</strong> ({code}) foi usado na última vez.
+                            <br />
+                            Deseja adicionar para esse mesmo?
+                        </p>
+                        <div className="buttons-container">
+                            <button
+                                className="secondary"
+                                onClick={() => {
+                                    setCode("");
+                                    setUser(undefined);
+                                }}
+                            >
+                                Remover
+                            </button>
+                            <button onClick={() => setUserConfirmed(true)}>
+                                Confirmar
+                            </button>
+                        </div>
+                    </>
+                ) : !sent ? (
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+
+                        const body: Partial<SubmitDaysRequestBody> = {
+                            won: won,
+                            userId: code,
+                            newNickname: nickname && nickname !== "" ? nickname : undefined,
+                            tries: won ? tries : 6,
+                            word: won ? word : undefined,
+                        };
+
+                        setLoading(true);
+                        fetch("/api/submit-day", {
+                            method: "POST",
+                            body: JSON.stringify(body),
+                        }).then(res => {
+                            if (res.status === 200) {
+                                setSent(true);
+                                return;
+                            }
+
+                            throw new Error("Erro ao enviar resultados");
+                        }).catch(e => {
+                            console.error(e);
+                            setError(e.message);
+                        }).finally(() => setLoading(false));
+                    }}>
+                        <label htmlFor="won">Você conseguiu advinhar a palavra?</label>
+                        <br />
+                        <div role="list" className="row">
+                            <div
+                                onClick={() => setWon(true)}
+                                className={"option letter " + (won ? "right" : "empty")}
+                            >
+                                Sim
+                            </div>
+                            <div
+                                onClick={() => setWon(false)}
+                                className={"option letter " + (won ? "empty" : "right")}
+                            >
+                                Não
+                            </div>
+                        </div>
+
+                        {won && <>
+                            <br />
+                            <label htmlFor="trie">Em quantas tentativas?</label>
+                            <div role="list" className="row">
+                                {[1, 2, 3, 4, 5, 6].map((trie, i) => (
+                                    <div
+                                        key={i}
+                                        onClick={() => setTries(trie)}
+                                        className={"option letter " + (tries === trie ? "right" : "empty")}
+                                    >
+                                        {trie}
+                                    </div>
+                                ))}
+                            </div>
+                            <br />
+                            <label htmlFor="word">Qual foi a palavra? (opcional)</label>
+                            <input
+                                id="word"
+                                name="word"
+                                maxLength={5}
+                                minLength={5}
+                                value={word}
+                                onChange={(e) => setWord(e.target.value)}
+                            />
+                            <br />
+                        </>}
+
+                        <br />
+                        <label htmlFor="nickname">Alterar nickname (opcional)</label>
+                        <input
+                            id="nickname"
+                            name="nickname"
+                            maxLength={20}
+                            value={nickname}
+                            style={{ textTransform: "none" }}
+                            onChange={(e) => setNickname(e.target.value)}
                         />
                         <br />
-                    </>}
 
-                    <br />
-                    <label htmlFor="nickname">Alterar nickname (opcional)</label>
-                    <input
-                        id="nickname"
-                        name="nickname"
-                        maxLength={20}
-                        value={nickname}
-                        style={{ textTransform: "none" }}
-                        onChange={(e) => setNickname(e.target.value)}
-                    />
-                    <br />
+                        {error && <p className="error">{error}</p>}
 
-                    {error && <p className="error">{error}</p>}
-
-                    <br />
-                    <button type="submit">
-                        Enviar
-                    </button>
-                </form>}
-
-                {sent && <>
+                        <br />
+                        <button type="submit">
+                            Enviar
+                        </button>
+                    </form>
+                ) : (
                     <p>
                         Resultados enviados!
                     </p>
-                </>}
+                )}
             </div>
         </div>
     );
