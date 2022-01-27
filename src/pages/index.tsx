@@ -184,7 +184,7 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
                                 </td>
                             </tr>
                         </tbody>
-                    ) : users.length === 0 || users.every(user => user.days.length === 0) ? (
+                    ) : users.every(user => !user.days.some(d => d.day === selectedDay)) ? (
                         <tbody>
                             <tr>
                                 <td colSpan={3} style={{ textAlign: "center" }}>
