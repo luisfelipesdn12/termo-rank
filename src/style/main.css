@@ -99,6 +99,8 @@ main h2 {
 
 .day-header svg {
     cursor: pointer;
+    width: 1em;
+    height: 1em;
 }
 
 .day-header svg:first-child {
@@ -277,11 +279,21 @@ form p.error,
     h2 {
         font-size: 2em;
     }
+
+    .day-header svg {
+        width: 1.5em;
+        height: 1.5em;
+    }
 }
 
 @media (max-width: 500px) {
     main table {
         zoom: 1.4;
+    }
+
+    .day-header svg {
+        width: 1.75em;
+        height: 1.75em;
     }
 }
 
