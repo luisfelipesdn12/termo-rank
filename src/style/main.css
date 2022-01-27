@@ -1,5 +1,9 @@
 @import "termo.css";
 
+* {
+    transition: all 2ms ease;
+}
+
 html {
     overflow: auto;
 }
@@ -57,7 +61,6 @@ main table td {
     background-color: #615458;
     border: 0.125em solid #4c434730;
 }
-
 
 main h2 {
     text-transform: uppercase;
@@ -265,5 +268,25 @@ form p.error,
     #input-modal .letter.option {
         width: calc(100vw / 8);
         height: calc(100vw / 8);
+    }
+
+    main table {
+        zoom: 1.2;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 500px) {
+    main table {
+        zoom: 1.4;
+    }
+}
+
+@media (max-width: 400px) {
+    main table {
+        zoom: 1.6;
     }
 }
