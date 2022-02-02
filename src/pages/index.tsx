@@ -55,7 +55,13 @@ const Index: NextPage<IndexPageProps> = ({ sampleCode }) => {
                 days.push(getCurrentDate());
             }
 
-            setAllDays(days.sort());
+            setAllDays(days.sort((a, b) => {
+                const [aDay, aMonth, aYear] = a.split("-");
+                const [bDay, bMonth, bYear] = b.split("-");
+
+                return new Date(`${aYear}-${aMonth}-${aDay}`).getTime() -
+                    new Date(`${bYear}-${bMonth}-${bDay}`).getTime();
+            }));
         }
     }, [users]);
 
